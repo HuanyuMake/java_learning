@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Mapper.UsersMapper">
+    <select id="selectAll" resultType="com.DB.User">
+        select *
+        from users;
+    </select>
+    <select id="selectByNames" resultType="com.DB.User">
+        select * from users
+            where
+                `name` in
+        <!--mybatis会把传入的数组封装为一个Map对象, key为 "array" value为 这个数组的值,
+        若想使用自定义的key, 就要在 Mapper.interface对应方法的对应参数上使用 @Param 注解标明key是什么-->
+        <!--(<foreach collection="names" item="name" separator=",">
+            #{name}
+        </foreach>)  这个可以-->
+            <foreach collection="names" item="name" separator="," open="(" close=")">
+                #{name}
+            </foreach>
+    </select>
+    <select id="selectUserByMap" resultType="com.DB.User">
+        select *
+        from users where `name` = #{user.name};
+    </select>
+</mapper>

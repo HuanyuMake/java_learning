@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--configuration里的配置项现需要遵守如下顺序, 可以在官网 XML配置中看到
+properties（属性）
+settings（设置）
+typeAliases（类型别名）
+typeHandlers（类型处理器）
+objectFactory（对象工厂）
+plugins（插件）
+environments（环境配置）
+environment（环境变量）
+transactionManager（事务管理器）
+dataSource（数据源）
+databaseIdProvider（数据库厂商标识）
+mappers（映射器）
+-->
+<configuration>
+    <!-- 为数据库返回的映射类型的实体类 比如 com.DB.Album 起一个别名, 默认别名就是 album,
+    在一切使用到这个包下实体类的地方都可以用这个别名, 详情见 Mybatis 官网手册 typeAliases 配置 -->
+    <typeAliases>
+        <package name="com.DB" />
+    </typeAliases>
+<!--    配置数据库连接信息, 可以配置多个 environment 通过default=${某个environment.id}来切换数据库连接信息-->
+    <environments default="development">
+        <environment id="development">
+<!--            事务管理, Mybatis 可以接管-->
+            <transactionManager type="JDBC"/>
+<!--            数据库连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/douban?useSSL=false"/>
+                <property name="username" value="root"/>
+                <property name="password" value="020914"/>
+            </dataSource>
+        </environment>
+        <!--<environment id="test">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/douban?useSSL=false"/>
+                <property name="username" value="root"/>
+                <property name="password" value="020914"/>
+            </dataSource>
+        </environment>-->
+    </environments>
+
+
+
+
+<!--    加载 sql语句的映射文件-->
+    <mappers>
+<!--        指定加载: 一个一个加载对应的配置文件-->
+<!--        <mapper resource="com/Mapper/AlbumsMapper.xml"/>-->
+<!--        包扫描: 只需要把配置文件的包路径写好,就可以把这个包下的配置文件全加载-->
+        <package name="com.Mapper"/>
+    </mappers>
+</configuration>

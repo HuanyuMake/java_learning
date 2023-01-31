@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Mapper.AlbumsMapper">
+
+    <!--    只有在 mybatis-config.xml 里配置了 typeAliases 为所用实体类起了别名,
+    resultType 在可以用所用实体类的别名, 这里就可以用 Album, 或其别名 album; 否则只能在resultType
+    里填写全包名 com.DB.Album 来配置数据库实体类-->
+    <select id="selectAll" resultType="album">
+        select * from albums
+    </select>
+    <select id="selectById" resultType="com.DB.Album">
+<!--        参数占位符
+            1. #{} 替换为 ? 使用 preparedStatement 来运行sql.防止sql注入
+            2. ${} 直接拼接到sql中, 在不使用用户输入的地方有用, 比如有些地方的表名,列名, 存在
+                sql注入问题
+            3. 在xml中使用 < 的语法错误问题
+                1.使用转义字符   &lt;   这四个字符
+                2.在CDATA区中书写, IDEA中输入 大写 CD 提示,输出 CDATA区 代码片段
+                        <![CDATA[
+                        < 其它想写的
+                        ]]>
+-->
+        select * from albums where id = #{id}
+
+    </select>
+<!--    静态sql, 条件中用到的值一旦为null, sql语句不会自动调整condition-->
+    <!--<select id="selectByCondition" resultType="com.DB.Album">
+        select * from albums
+                 where `name` like #{name}
+                   and singer like #{singer}
+    </select>-->
+<!--    动态sql, https://mybatis.org/mybatis-3/zh/dynamic-sql.html 判断字符串是否为空 直接用 != '' 就可-->
+    <!--<select id="selectByCondition" resultType="com.DB.Album">
+        select * from albums
+        <if test="name != null and name != '' or singer != null and singer !=''" >
+            where  1 = 1 /* 加一个永真就是为了后面不用判断是否加 and */
+        </if>
+            <if test="name != null">
+                and `name` like #{name}
+            </if>
+        <if test="singer != null">
+            and singer like #{singer}
+        </if>
+        ;
+    </select>-->
+    <select id="selectByCondition" resultType="com.DB.Album">
+        select * from albums
+        /* 这里还可以使用 mybatis的where标签, 自动整理 所有的 condition 避免语法错误, 所有语句都可以加上 and or*/
+        <where>
+            <if test="name != null">
+                and `name` like #{name}
+            </if>
+            <if test="singer != null">
+                and singer like #{singer}
+            </if>
+        </where>;
+    </select>
+
+<!--    switch case 选择-->
+    <select id="selectByOneCondition" resultType="com.DB.Album">
+        select * from albums
+        <where>
+            <choose>
+                <when test="name != null and name != ''">
+                    `name` like #{name}
+                </when>
+                <when test="singer != null and singer != ''">
+                    `singer` like #{singer}
+                </when>
+                <otherwise>
+                    1 = 1
+                </otherwise>
+            </choose>
+        </where>;
+    </select>
+
+    <insert id="add">
+        insert into albums (`name`, singer, genre, album_type, `medium`, publish_time, publisher, records_num, bar_code)
+        values (#{name}, #{singer}, #{genre}, #{album_type}, #{medium}, #{publish_time}, #{publisher}, #{records_num}, #{bar_code});
+        <!--    mybatis 会自动开启事务, 若做了dml后不主动提交, 则会回滚-->
+        <!--    commit; 在这里不能写, 好像这里只能写一条 完整的 sql 语句-->
+    </insert>
+
+    <!--    获取添加的记录的主键-->
+    <insert id="addAndSetId" useGeneratedKeys="true" keyProperty="id">
+        insert into albums (`name`, singer, genre, album_type, `medium`, publish_time, publisher, records_num, bar_code)
+        values (#{name}, #{singer}, #{genre}, #{album_type}, #{medium}, #{publish_time}, #{publisher}, #{records_num}, #{bar_code});
+    </insert>
+
+
+
+</mapper>
