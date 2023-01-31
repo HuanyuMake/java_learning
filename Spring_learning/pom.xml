@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.pdl</groupId>
+    <artifactId>Spring_learning</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>Spring_ annotation</module>
+        <module>Spring_AOP</module>
+        <module>Spring_transaction</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <!-- 核心IOC容器-->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.0.4</version>
+        </dependency>
+        <dependency>
+            <!-- Junit4 测试框架容器-->
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Spring的AOP框架 整合了 aspectJ AOP框架-->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>6.0.4</version>
+        </dependency>
+        <dependency>
+            <!-- DataSource 数据源对象 管理数据库连接的最好的数据库池-->
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.15</version>
+        </dependency>
+        <dependency>
+            <!-- mysql驱动-->
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.31</version>
+        </dependency>
+        <dependency>
+            <!-- 更多注解 -->
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.0</version>
+        </dependency>
+        <dependency>
+            <!-- Spring 对象关系映射器
+            引入了 Spring的 jdbc 工具类 jdbcTemplate 和 Spring的声明式事务-->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>6.0.4</version>
+        </dependency>
+        <dependency>
+            <!-- Spring 的测试框架 与 Junit测试框架结合使用,需要先引入 Junit依赖
+            通过DI直接为测试类注入需要用到的Bean, 不需要先获取IOC容器-->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>6.0.4</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+<!--    以下是编译时的配置,
+        maven-compiler-plugin 的配置是为了在 执行 javac file.java 时,附带的参数
+-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+<!--                    <release>${java.version}</release>-->
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

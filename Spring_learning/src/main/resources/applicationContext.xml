@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="helloWorld" class="pojo.com.pdl.HelloWorld" />
+    <bean id="user" class="pojo.com.pdl.User">
+        <property name="name" value="张三"/>
+        <property name="age" value="54"/>
+    </bean>
+
+    <bean id="userRefDI" class="pojo.com.pdl.User">
+        <property name="name" value="张三书"/>
+        <property name="age" value="100"/>
+        <property name="books">
+            <array>
+                <ref bean="book"/>
+                <ref bean="book"/>
+                <ref bean="book"/>
+                <ref bean="book"/>
+                <ref bean="book"/>
+                <ref bean="book"/>
+            </array>
+        </property>
+        <property name="hobbies">
+            <array>
+                <value>抽烟</value>
+                <value>喝酒</value>
+                <value>烫头</value>
+            </array>
+        </property>
+    </bean>
+    <bean id="book" class="pojo.com.pdl.Book" scope="prototype">
+        <property name="name" value="某本书"/>
+        <property name="price" value="100"/>
+    </bean>
+
+    <bean id="team" class="pojo.com.pdl.Team">
+        <property name="name" value="团队"/>
+        <!--<property name="users" >
+            <list>
+                <ref bean="user"/>
+                <ref bean="userRefDI"/>
+            </list>
+        </property>-->
+        <property name="users" ref="usersList"/>
+        <!--<property name="orgMap">
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="组织1" value="user1"/>
+                <entry key="组织2" value="user3"/>
+            </map>
+        </property>-->
+        <property name="orgMap" ref="orgMap"/>
+    </bean>
+
+    <util:list id="usersList">
+        <ref bean="userRefDI"/>
+        <ref bean="user"/>
+    </util:list>
+
+    <util:map id="orgMap" key-type="java.lang.Integer" value-type="pojo.com.pdl.Organization">
+        <entry  key="#{org1.id}" value-ref="org1"/>
+        <entry>
+            <key ><value type="java.lang.Integer">2</value></key>
+            <bean class="pojo.com.pdl.Organization">
+                <property name="id" value="2"/>
+                <property name="name" value="组织2"/>
+            </bean>
+        </entry>
+    </util:map>
+
+    <bean id="org1" class="pojo.com.pdl.Organization">
+        <property name="id" value="1"/>
+        <property name="name" value="组织1"/>
+    </bean>
+
+</beans>

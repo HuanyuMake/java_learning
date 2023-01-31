@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:contaxt="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+<!--    组件扫描, 将带有组件注释的类都加载为Bean, 这里排除了 带有@Controller 注释的组件-->
+    <!--<contaxt:component-scan base-package="com.pdl" >
+        <contaxt:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </contaxt:component-scan>-->
+    <contaxt:component-scan base-package="com.pdl" />
+</beans>

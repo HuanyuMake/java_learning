@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="userFactory" class="org.pdl.factory.userFactory"/>
+
+    <bean id="user" class="pojo.com.pdl.User" init-method="initMethod" destroy-method="destroyMethod">
+        <property name="name" value="lifecycle"/>
+        <property name="outputLifecycle" value="true"/>
+    </bean>
+
+<!--    配置后置处理器, 以在所有Bean初始化前后进行自定义操作-->
+    <bean class="org.pdl.processor.myBeanPostProcessor"/>
+</beans>
