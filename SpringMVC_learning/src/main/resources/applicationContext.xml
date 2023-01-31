@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:mvn="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <context:component-scan base-package="com.pdl.controller"/>
+
+<!--    启用默认的servlet处理静态资源, 在 tomcat/config下的web.xml中配置了由 default servlet
+处理静态资源, 其 url-pattern为 / , 而在该工程下, DispatcherServlet 的 url-pattern与其相同, 冲突了
+ 而且工程下的web.xml优先级高于服务器默认的web.xml, 所以原本由default servlet处理的以/开头的静态资源全部都转由
+ DispatcherServlet 处理, 若DispatcherServlet没有对这些资源的响应,则会报404错误.
+ 1. 配置了<mvc:default-servlet-handler/>与<mvc:annotation-driven />两项后
+    所有请求先由 DispatcherServlet处理,若没有匹配上的,则转由defaultServlet处理,所以静态资源就可以被访问到了
+ 2. 只配置了<mvc:default-servlet-handler/>, 则所有请求先由defaultServlet处理,而因没有
+     开启annotation-driven注解驱动, 则会导致DispatcherServlet无法处理任何请求, 相当于其会失效
+ -->
+    <mvc:default-servlet-handler/>
+
+<!--    开启SpringMVC的注解驱动, 含义就是 开启注解, 以赋予DispatcherServlet处理响应的能力 -->
+    <mvc:annotation-driven >
+        <!--设置json格式请求体的编码, 这个也是知道就行, 现在用的是 SpringMVC6版本用的字符集可能也变成UTF-8了-->
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                        <value>application/json;</value>
+                    </list>
+                </property>
+            </bean>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                        <value>application/json;</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!--    配置文件上传解析器   id中的值是固定的不可以改变的-->
+    <bean  id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+
+    <!--配置拦截器 拦截器的执行顺序是洋葱皮结构 ,即pre()是顺序执行,post()是逆序执行. 顺序:在这里配置的次序-->
+    <!--返回false的pre()以及其之前的pre()都会执行,然后所有的post()都不执行
+        除了返回false的pre()的after()不执行外,其前面拦截器的after()都执行
+    -->
+    <mvn:interceptors>
+        <!--顺序 (pre1) (pre2) (post1 after1) (post2 after2)  -->
+        <!--默认对所有经由 dispatcherServlet 处理的请求都会被这个拦截器处理-->
+        <bean class="com.pdl.interceptor.FirstInterceptor"/>
+        <!--<ref bean="BeanId"></ref> 引入扫描的Bean或者外部Bean-->
+        <!--<mvc:interceptor>
+            &lt;!&ndash;对那些url运用该拦截器 /* 表示这一层路径下的所有请求 /** 表示从该目录开始的所有目录下的请求&ndash;&gt;
+            <mvc:mapping></mvc:mapping>
+            &lt;!&ndash;排除哪些url&ndash;&gt;
+            <mvc:exclude-mapping></mvc:exclude-mapping>
+            <bean></bean> //用哪个拦截器
+            <ref></ref> //用哪个扫描Bean,外部Dean
+        </mvc:interceptor>-->
+    </mvn:interceptors>
+
+<!--    这些是 SpringMVC的视图控制器配置, 前后端分离, 视图部分 SpringMVC就不用操心了
+    <mvc:view-resolvers></mvc:view-resolvers>
+    <mvc:view-controller></mvc:view-controller>-->
+</beans>

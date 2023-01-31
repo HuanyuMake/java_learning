@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <form id="form1" action="./" method="post" target="_self">
+      <label for="username">
+          用户名:<input type="text" name="name" value="default" id="username"/>
+      </label>
+      <label for="password">
+          password: <input type="text" name="password" value="default" id="password"/>
+      </label>
+      <label for="submit" >
+          <input type="submit" value="提交" id="submit">
+      </label>
+  </form>
+  <label for="urlInput">url: </label><input id="urlInput">
+  <form id="form2" action="./fileUpload" method="post" target="_self" enctype="multipart/form-data">
+      <input type="file" name="file">
+      <input type="submit" value="上传">
+  </form>
+
+  <script>
+        let form = document.querySelector("#form1");
+        let urlInput = document.querySelector("#urlInput")
+
+        urlInput.addEventListener("input",(e)=>{
+            let value = e.target.value
+            if(value[0]!== '/') {
+                e.target.value = '/'+ e.target.value
+                value = e.target.value
+            }
+            form.action = '.'+ value
+        })
+
+    </script>
+</body>
+</html>
