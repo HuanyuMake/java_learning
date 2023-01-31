@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <context:property-placeholder location="classpath:dbConfig.properties"/>
+
+    <context:component-scan base-package="com.pdl">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="username" value="${jdbc.mysql.username}"/>
+        <property name="password" value="${jdbc.mysql.password}"/>
+        <property name="url" value="${jdbc.mysql.url}"/>
+        <property name="driverClassName" value="${jdbc.mysql.driverClassName}"/>
+    </bean>
+
+    <!--配置事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--开启事务的注解驱动-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--引入 SqlSessionFactoryBean 通过FactoryBean可以直接得到SqlSessionFactory对象-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="typeAliasesPackage" value="com.pdl.ssm.pojo"/> <!--设置实体类的类型别名-->
+        <!--这个设置mapper接口的映射文件所在位置, 只有在mapper接口与映射文件不在一个包下才需要设置-->
+        <!--<property name="mapperLocations" value="classpath:"></property>-->
+    </bean>
+
+    <!--这个bean可以借助SqlSessionFactoryBean得到工厂,再由 SqlSessionFactory得到SqlSession
+    再通过SqlSession.getMapper(MapperInterface.class) 得到这些Mapper接口实现类, 再把这些实现类交给IOC
+    然后在Service层里,就可以通过自动装配来获取这些Mapper实体,调用封装了映射文件中的sql语句的方法-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.pdl.ssm.dao"/>
+    </bean>
+
+</beans>

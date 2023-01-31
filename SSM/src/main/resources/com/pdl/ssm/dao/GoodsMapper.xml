@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pdl.ssm.dao.GoodsMapper">
+    <update id="updateOneItem">
+        update goods
+        <set>
+            <if test="name != null" >
+                `name` = #{name}
+            </if>
+            <if test="price != null" >
+                `stock` = #{stock}
+            </if>
+            <if test="stock != null" >
+                `stock` = #{stock}
+            </if>
+        </set>
+         where id = #{id}
+    </update>
+    <select id="selectAll" resultType="goods">
+        select *
+        from goods;
+    </select>
+</mapper>

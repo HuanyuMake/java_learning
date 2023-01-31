@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/vue.global.js"></script>
+</head>
+<body>
+    Hello!
+    <div id="app">
+        {{message}}
+        <table>
+            <caption>consumerlist</caption>
+            <thead>
+            <tr>
+                <th >id</th><th >name</th><th >balance</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr v-for="consumer in consumerlist">
+                    <td>{{consumer.id}}</td>
+                    <td>{{consumer.name}}</td>
+                    <td><input type="number" v-model="consumer.balance" @change="editBalance(consumer)"></td>
+                </tr>
+            </tbody>
+        </table>
+        <button @click="getAllConsumers()">查询所有消费者</button>
+        <table>
+            <caption>goodslist</caption>
+            <thead>
+            <tr>
+                <th >id</th><th >name</th><th>price</th><th >stock</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="goods in goodslist">
+                <td>{{goods.id}}</td>
+                <td>{{goods.name}}</td>
+                <td>{{goods.price}}</td>
+                <td><input type="number" v-model.number="goods.stock" @change="editStock(goods)"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button @click="getAllGoods()">查询所有商品</button>
+    </div>
+    <script src="js/axios.min.js"></script>
+
+    <script>
+        const { createApp } = Vue
+        const server = axios.create({
+            baseURL: "./"
+        })
+        const app = {
+            data() {
+                return {
+                    message: '',
+                    consumerlist: [],
+                    goodslist: []
+                }
+            },
+            methods:{
+                getAllConsumers(){
+                    server.get('/consumer').then(res=>{
+                        this.consumerlist = res.data.data
+                    }).catch(e=>{
+                        this.message = e
+                    })
+                },
+                getAllGoods(){
+                    server.get("/goods").then(res=>{
+                        this.goodslist = res.data.data
+                    }).catch(e=>{
+                        this.message = e
+                    })
+                },
+                editBalance(consumer){
+                    server.put(`/consumer/${consumer.id}/balance`, {
+                        balance: consumer.balance
+                    })
+                },
+                editStock(goods){
+                    server.put(`/goods/${goods.id}/stock`, {
+                        stock:goods.stock
+                    })
+                },
+            }
+        }
+
+        createApp(app).mount('#app')
+    </script>
+</body>
+
+</html>
